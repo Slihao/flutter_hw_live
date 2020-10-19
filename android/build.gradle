@@ -1,0 +1,63 @@
+group 'com.slh.flutter_hw_live'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.0'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+
+
+    defaultConfig {
+        minSdkVersion 21
+        ndk {
+            abiFilters "armeabi-v7a" // 指定要ndk需要兼容的架构(这样其他依赖包里mips,x86,armeabi,arm-v8之类的so会被过滤掉)
+        }
+        multiDexEnabled true
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+dependencies {
+    implementation(name: 'HwLivePushSDK-release', ext: 'aar')
+    implementation files('libs\\NvAndroidStreamingSdk.jar')
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.alibaba:fastjson:1.2.62'
+    implementation 'com.squareup.okhttp3:okhttp:3.14.2'
+    implementation files('libs\\sdk-hwvcplayer-1.1.2.jar')
+    implementation files('libs\\sdk-m3u8cache-1.1.2.jar')
+    implementation files('libs\\sdk-videocache-1.1.2.jar')
+}

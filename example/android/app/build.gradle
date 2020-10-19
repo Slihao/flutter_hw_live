@@ -1,0 +1,103 @@
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+apply plugin: 'com.android.application'
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+
+android {
+    compileSdkVersion 28
+
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+
+    packagingOptions {//加上这写代码
+        pickFirst 'lib/armeabi-v7a/libyuv.so'
+        pickFirst 'lib/armeabi-v7a/libenc.so'
+    }
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId "com.slh.flutter_hw_live_example"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+//        ndk {
+//            //选择要添加的对应 cpu 类型的 .so 库。
+//            abiFilters 'armeabi-v7a'
+//            //'armeabi', 'armeabi-v7a', 'x86', 'x86_64', 'mips', 'mips64', 'arm64-v8a'
+//            // 还可以添加
+//        }
+    }
+
+    //打包
+    signingConfigs {
+
+        config {
+
+            storeFile file("key.store")
+
+            storePassword "lpn1992931"
+
+            keyAlias "pomelorange"
+
+            keyPassword "lpn1992931"
+
+        }
+
+    }
+    buildTypes {
+        release {
+            ndk {
+                //选择要添加的对应 cpu 类型的 .so 库。
+                abiFilters 'armeabi-v7a'
+                //'armeabi', 'armeabi-v7a', 'x86', 'x86_64', 'mips', 'mips64', 'arm64-v8a'
+                // 还可以添加
+            }
+            minifyEnabled false   // 是否启用压缩
+            shrinkResources false    // 是否打包(无用)的资源 和 flutter build apk --no-shrink一样
+            zipAlignEnabled false   // 是否采用压缩对齐方式（暂时不懂）
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
+//            ndk {
+//                //选择要添加的对应 cpu 类型的 .so 库。
+//                abiFilters 'armeabi-v7a'
+//                //'armeabi', 'armeabi-v7a', 'x86', 'x86_64', 'mips', 'mips64', 'arm64-v8a'
+//                // 还可以添加
+//            }
+            signingConfig signingConfigs.config //debug
+        }
+    }
+
+    sourceSets {
+        main.jniLibs.srcDirs = ['libs']
+    }
+
+}
+
+flutter {
+    source '../..'
+}
