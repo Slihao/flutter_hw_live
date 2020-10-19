@@ -159,7 +159,7 @@ public class WeVideoView extends BaseWeVideoView {
             VideoViewManager.instance().releaseVideoPlayer();
             VideoViewManager.instance().setCurrentVideoPlayer(this);
         }
-        if (checkNetwork()) return;
+//        if (checkNetwork()) return;
 //        addSubtitleView();
 //        new LoadSubtitleAsync().execute("");
         super.startPlay(islive);
